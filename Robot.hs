@@ -27,4 +27,6 @@ If the cardinal direction chosen goes to a pit or an wall the robot is
 destroyed. If the new cell contains minerals they are immediately collected.
 -}
 -- perceiveAndAct :: SVal -> [Cardinal] -> a -> (Action, a)
-perceiveAndAct s cs m = (Nothing, m) -- TODO
+-- perceiveAndAct s cs m = (Nothing, m) -- TODO
+direction = S
+perceiveAndAct s cs m = (Just direction, m)
