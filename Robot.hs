@@ -9,7 +9,7 @@ is always placed at (0, 0)). This function should return the initial memory
 element of the robot.
 -}
 -- startRobot :: Size -> a
-startRobot Size = undefined -- TODO
+startRobot = undefined -- TODO
 
 {-
 At each time step the robot sends a light beam in all 4 cardinal directions,
