@@ -10,7 +10,7 @@ is always placed at (0, 0)). This function should return the initial memory
 element of the robot.
 -}
 -- startRobot :: Size -> a
-startRobot size = memory
+startRobot size memory = memory
 {-
 At each time step the robot sends a light beam in all 4 cardinal directions,
 receives the reflected rays and computes their intensity (the first argument
