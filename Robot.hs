@@ -3,14 +3,14 @@ where
 
 import Types
 
+data RobotMem mem = Empty | Point mem
 {-
 When the robot enters the mine it receives as input the size of the mine (it
 is always placed at (0, 0)). This function should return the initial memory
 element of the robot.
 -}
 -- startRobot :: Size -> a
-startRobot = undefined -- TODO
-
+startRobot size = memory
 {-
 At each time step the robot sends a light beam in all 4 cardinal directions,
 receives the reflected rays and computes their intensity (the first argument
