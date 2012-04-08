@@ -10,7 +10,7 @@ is always placed at (0, 0)). This function should return the initial memory
 element of the robot.
 -}
 -- startRobot :: Size -> a
-startRobot size memory = memory
+startRobot size = memory
 {-
 At each time step the robot sends a light beam in all 4 cardinal directions,
 receives the reflected rays and computes their intensity (the first argument
@@ -28,5 +28,8 @@ destroyed. If the new cell contains minerals they are immediately collected.
 -}
 -- perceiveAndAct :: SVal -> [Cardinal] -> a -> (Action, a)
 -- perceiveAndAct s cs m = (Nothing, m) -- TODO
+
+-- x=getDirection(maze memory)
+-- maze :: Maze
 direction = S
 perceiveAndAct s cs m = (Just direction, m)
