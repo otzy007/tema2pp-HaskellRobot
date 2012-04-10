@@ -70,7 +70,7 @@ perceiveAndAct s cs m = do
    let newpos = increase (currentPos m) dir
    let mem = RobotMem {
       currentPos = newpos
-      , oldSensorVal = 0
+      , oldSensorVal = s
       , oldPos = oldPos m ++ [newpos]
    }
    (Just dir, mem)
