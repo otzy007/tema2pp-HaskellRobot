@@ -33,6 +33,7 @@ memory element.
 If the cardinal direction chosen goes to a pit or an wall the robot is
 destroyed. If the new cell contains minerals they are immediately collected.
 -}
+-- used to set new directions coordinates
 increase :: Point -> Cardinal -> Point
 increase (x, y) N = (x - 1, y)
 increase (x, y) S = (x + 1, y)
@@ -40,17 +41,22 @@ increase (x, y) E = (x, y + 1)
 increase (x, y) W = (x, y - 1)
 
 direction :: [Cardinal] -> SVal -> [Cardinal] -> RobotMem -> Cardinal
-direction (hd:tl) s cs m
-   | elem hd cs = direction tl s cs m
-   | elem (increase (currentPos m) hd) (oldPos m) = direction tl s cs m
-   | otherwise = hd
---    | otherwise  = oldPos m ++ [increase (currentPos m) hd]
---       return hd
---    | elem N cs = S
---    | elem W cs = E
---    | elem S cs = N
---    | elem E cs = W
---    | otherwise = S
+direction possibleDir s cs m
+   -- if there are no possible directions empty the old positions memory and try again
+   | possibleDir == [] = direction [E, N, S, W] s cs RobotMem {
+	 currentPos  = currentPos m			 
+	 , oldSensorVal = oldSensorVal m
+	 , oldPos = [(head (reverse (oldPos m)))] 
+      } 
+--    oldPos = [head (reverse (tail (reverse (oldPos m))))] ++ [(head (reverse (oldPos m)))] ++ [currentPos m]}
+
+   -- exclude the blocked directions
+   | elem (head possibleDir) cs = direction (tail possibleDir) s cs m
+   --exclude the already visited directions
+   | elem (increase (currentPos m) (head possibleDir)) (oldPos m) = 
+      direction (tail possibleDir) s cs m 
+   | otherwise = head possibleDir --return the direction
+
 
 perceiveAndAct :: SVal -> [Cardinal] -> RobotMem -> (Action, RobotMem)
 -- perceiveAndAct s cs m = (Nothing, m) -- TODO
@@ -62,5 +68,8 @@ perceiveAndAct :: SVal -> [Cardinal] -> RobotMem -> (Action, RobotMem)
 perceiveAndAct s cs m = do 
    let dir = direction [E, S, N, W] s cs m
    let newpos = increase (currentPos m) dir
-   let mem = RobotMem {currentPos = newpos, oldSensorVal = 0, oldPos = oldPos m ++ [newpos]}
+   let mem = RobotMem {
+      currentPos = newpos
+      , oldSensorVal = 0
+      , oldPos = oldPos m ++ [newpos]}
    (Just dir, mem)
