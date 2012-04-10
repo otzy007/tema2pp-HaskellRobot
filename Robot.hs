@@ -17,7 +17,11 @@ is always placed at (0, 0)). This function should return the initial memory
 element of the robot.
 -}
 startRobot :: Size -> RobotMem
-startRobot size = RobotMem {currentPos = (0, 0), oldSensorVal = 0, oldPos = [(0, 0)]}
+startRobot size = RobotMem {
+   currentPos = (0, 0)
+   , oldSensorVal = 0
+   , oldPos = [(0, 0)]
+}
 {-
 At each time step the robot sends a light beam in all 4 cardinal directions,
 receives the reflected rays and computes their intensity (the first argument
@@ -42,16 +46,22 @@ increase (x, y) W = (x, y - 1)
 
 direction :: [Cardinal] -> SVal -> [Cardinal] -> RobotMem -> Cardinal
 direction possibleDir s cs m
-   -- if there are no possible directions empty the old positions memory and try again
+   -- if there are no possible directions empty the memory and try again
    | possibleDir == [] = direction [E, N, S, W] s cs RobotMem {
-	 currentPos  = currentPos m			 
-	 , oldSensorVal = oldSensorVal m
-	 , oldPos = [(head (reverse (oldPos m)))] 
-      } 
+      currentPos  = currentPos m			 
+      , oldSensorVal = oldSensorVal m
+      , oldPos = [(head (reverse (oldPos m)))] 
+   } 
 --    oldPos = [head (reverse (tail (reverse (oldPos m))))] ++ [(head (reverse (oldPos m)))] ++ [currentPos m]}
 
    -- exclude the blocked directions
    | elem (head possibleDir) cs = direction (tail possibleDir) s cs m
+   -- if the sensor value is smaller than the previous one the robot can go back
+   | s < oldSensorVal m = direction possibleDir s cs RobotMem {
+      currentPos  = currentPos m			 
+      , oldSensorVal = s
+      , oldPos = (reverse (tail (reverse (oldPos m)))) 
+   } 
    --exclude the already visited directions
    | elem (increase (currentPos m) (head possibleDir)) (oldPos m) = 
       direction (tail possibleDir) s cs m 
