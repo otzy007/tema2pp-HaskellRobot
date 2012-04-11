@@ -46,11 +46,17 @@ increase (x, y) W = (x, y - 1)
 
 direction :: [Cardinal] -> SVal -> [Cardinal] -> RobotMem -> Cardinal
 direction possibleDir s cs m
-   -- if there are no possible directions empty the memory and try again
-   | possibleDir == [] = direction [E, N, S, W] s cs RobotMem {
+
+   -- if there are no possible directions empty the memory and try again 
+   | s == 0 && possibleDir == [] = direction [E, S, N, W] s cs RobotMem {
+      currentPos = currentPos m
+      , oldSensorVal = oldSensorVal m
+      , oldPos = [currentPos m]
+   }
+   | possibleDir == [] = direction [E, S, N, W] s cs RobotMem {
       currentPos  = currentPos m			 
       , oldSensorVal = oldSensorVal m
-      , oldPos = [(head (reverse (oldPos m)))] 
+      , oldPos = drop ((length (oldPos m)) - 2) (oldPos m)
    } 
 --    oldPos = [head (reverse (tail (reverse (oldPos m))))] ++ [(head (reverse (oldPos m)))] ++ [currentPos m]}
 
@@ -76,7 +82,7 @@ perceiveAndAct :: SVal -> [Cardinal] -> RobotMem -> (Action, RobotMem)
 -- cs = blocked cells
 -- m = robot's memory
 perceiveAndAct s cs m = do 
-   let dir = direction [E, S, N, W] s cs m
+   let dir = direction [E, N, S, W] s cs m
    let newpos = increase (currentPos m) dir
    let mem = RobotMem {
       currentPos = newpos
